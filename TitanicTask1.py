@@ -1,5 +1,5 @@
 #Titanic Task 1
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.metrics import balanced_accuracy_score, accuracy_score, precision_score, recall_score, f1_score
 from sklearn.ensemble import RandomForestClassifier
@@ -8,7 +8,6 @@ import xgboost as xgb
 from pandas import *
 import warnings
 warnings.filterwarnings('ignore')
-import matplotlib.pyplot as plt
 
 #Reading CSV FILE
 data = read_csv("tested.csv")
@@ -49,7 +48,6 @@ def CalculateAccuracy(y_test, pred):
     print('\n-------------------- Testing accuracy --------------------')
     print('\nAccuracy: {:.2f}'.format(accuracy_score(y_test, pred)))
     print('Balanced Accuracy: {:.2f}\n'.format(balanced_accuracy_score(y_test, pred)))
-
     print('\n------------------ Confusion Matrix -----------------\n')
     print(confusion_matrix(y_test, pred))
     print('Weighted Precision: {:.2f}'.format(precision_score(y_test, pred, average='weighted')))
@@ -57,6 +55,23 @@ def CalculateAccuracy(y_test, pred):
     print('Weighted F1-score: {:.2f}'.format(f1_score(y_test, pred, average='weighted')))
     print('\n--------------- Classification Report ---------------\n')
     print(classification_report(y_test, pred))
+
+def Predict():
+    # Getting input from the user to know if he/ she survived or not.. It's optional.
+    print('\n Enter the passenger ID you want to know survived or not:')
+    pid = input()
+    print("\n Enter its PClass: ")
+    pclass = input()
+    print("\n Enter its sex: ")
+    sex = input()
+    print("\n Enter the number of its siblings: ")
+    sib = input()
+    print("\n Enter its parch: ")
+    parch = input()
+    print("\n Enter its fare: ")
+    fare = input()
+    test_row = [[pid, pclass, sex, sib, parch, fare]]
+    return test_row
 
 # 1- RANDOM FOREST CLASSIFIER Model
 def MyRandomForestClassifier():
@@ -67,6 +82,20 @@ def MyRandomForestClassifier():
     print('\n-------------------- Training accuracy --------------------')
     print('\nAccuracy: {:.2f}'.format(accuracy_score(y_train, rclf.predict(X_train))))
     CalculateAccuracy(y_test, y_pred1)
+    while True:
+        print("Do you want to know if specific passenger is survived press 1, if not press 2: ")
+        number = input()
+        if number == '1':
+            test_row = Predict()
+            y_pred = rclf.predict(test_row)
+            if y_pred == '1':
+                print("Survived.")
+            else:
+                print("Dead.")
+        elif number == '2':
+            break
+        else:
+            print("Invalid input.")
 
 # 2- KNeighborsClassifier Model
 def KNN():
@@ -77,6 +106,20 @@ def KNN():
     print('\n-------------------- Training accuracy --------------------')
     print('\nAccuracy: {:.2f}'.format(accuracy_score(y_train, knnclf.predict(X_train))))
     CalculateAccuracy(y_test, y_pred2)
+    while True:
+        print("Do you want to know if specific passenger is survived press 1, if not press 2: ")
+        number = input()
+        if number == '1':
+            test_row = Predict()
+            y_pred = knnclf.predict(test_row)
+            if y_pred == '1':
+                print("Survived.")
+            else:
+                print("Dead.")
+        elif number == '2':
+            break
+        else:
+            print("Invalid input.")
 
 # 3- XGBoost Model
 def XGBoost():
@@ -89,29 +132,39 @@ def XGBoost():
     print('\n-------------------- Training accuracy --------------------')
     print('\nAccuracy: {:.2f}'.format(accuracy_score(y_train, xgb_clf.predict(X_train))))
     CalculateAccuracy(y_test, y_pred3)
+    while True:
+        print("Do you want to know if specific passenger is survived press 1, if not press 2: ")
+        number = input()
+        if number == '1':
+            test_row = Predict()
+            y_pred = xgb_clf.predict(test_row)
+            if y_pred == '1':
+                print("Survived.")
+            else:
+                print("Dead.")
+        elif number == '2':
+            break
+        else:
+            print("Invalid input.")
+def ClassifierModel():
+    while True:
+        print(" Enter the number of the classifier model you want to know its accuracy: ")
+        print('\n 1- RANDOM FOREST CLASSIFIER')
+        print('\n 2- KNeighborsClassifier')
+        print('\n 3- The XGBoost Model')
+        print("\n If you want to stop the program enter S ")
+        task = input()
+        if task == "1":
+            MyRandomForestClassifier()
+        elif task == "2":
+            KNN()
+        elif task == "3":
+            XGBoost()
+        elif task.lower() == 's':
+            break
+        else:
+            print("Invalid input. Please try again.")
 
-while True:
-    print(" Enter the number of the classifier model you want to know its prediction: ")
-    print('\n 1- RANDOM FOREST CLASSIFIER')
-    print('\n 2- KNeighborsClassifier')
-    print('\n 3- The XGBoost Model')
-    print("\n If you want to stop the program enter S ")
-    task = input()
-    if task == "1":
-        MyRandomForestClassifier()
-    elif task == "2":
-        KNN()
-    elif task == "3":
-        XGBoost()
-    elif task.lower() == 's':
-        break
-    else:
-        print("Invalid input. Please try again.")
 
-# Getting input from the user to know their prediction.. It's optional.
-# test_row = [[902,3,0,0,0,7.8958]]
-# y_pred = xgb_clf.predict(test_row)
-# print('prediction ',y_pred)
-
-
+ClassifierModel()
 
