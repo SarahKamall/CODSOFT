@@ -187,12 +187,7 @@ def linearModel():
             break
         else:
             print("Invalid input.")
-    plt.figure(figsize=(10, 6))
-    sns.regplot(x=y_test, y=y_pred)
-    plt.title("Actual vs. predicted movie ratings with regression line")
-    plt.xlabel("Actual Ratings (y_test)")
-    plt.ylabel("Predicted Ratings (y_pred)")
-    plt.show()
+    return y_pred
 
 # 2- RANDOM FOREST CLASSIFIER Model
 def MyRandomForestRegressor():
@@ -223,7 +218,6 @@ def MyRandomForestRegressor():
             else:
                 print("Invalid input.")
 
-# MyRandomForestClassifier()
 
 def ClassifierModel():
     while True:
@@ -241,5 +235,18 @@ def ClassifierModel():
         else:
             print("Invalid input. Please try again.")
 
-#the features to predict with Drama, Gaurav, Bakshi, Rasika Dugal, Vivek Ghamand, Arvind Jangid
+
 ClassifierModel()
+model = LinearRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+plt.figure(figsize=(10, 6))
+sns.regplot(x=y_test, y=y_pred)
+plt.title("Actual vs. predicted movie ratings with regression line")
+plt.xlabel("Actual Ratings (y_test)")
+plt.ylabel("Predicted Ratings (y_pred)")
+plt.show()
+#the features to predict with Drama, Gaurav, Bakshi, Rasika Dugal, Vivek Ghamand, Arvind Jangid
+#96 min	Drama	6.2	17	Madhu Ambat	Rati Agnihotri	Gulshan Grover	Atul Kulkarni
+#100% Love	-2012	166 min	Comedy, Drama, Romance	5.7	512	Rabi Kinagi	Jeet	Koyel Mallick	Sujoy Ghosh
+
