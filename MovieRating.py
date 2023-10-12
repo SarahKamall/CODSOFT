@@ -247,6 +247,5 @@ plt.xlabel("Actual Ratings (y_test)")
 plt.ylabel("Predicted Ratings (y_pred)")
 plt.show()
 #the features to predict with Drama, Gaurav, Bakshi, Rasika Dugal, Vivek Ghamand, Arvind Jangid
-#96 min	Drama	6.2	17	Madhu Ambat	Rati Agnihotri	Gulshan Grover	Atul Kulkarni
-#100% Love	-2012	166 min	Comedy, Drama, Romance	5.7	512	Rabi Kinagi	Jeet	Koyel Mallick	Sujoy Ghosh
-
+#96 min	Drama	6.1	17	Madhu Ambat	Rati Agnihotri	Gulshan Grover	Atul Kulkarni
+#100% Love	-2012	166 min	Comedy, Drama, Romance	5.3	512	Rabi Kinagi	Jeet	Koyel Mallick	Sujoy Ghosh
