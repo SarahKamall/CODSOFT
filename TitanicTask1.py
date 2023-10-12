@@ -4,6 +4,7 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.metrics import balanced_accuracy_score, accuracy_score, precision_score, recall_score, f1_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
 from pandas import *
 import warnings
@@ -23,8 +24,7 @@ data = data.drop(['Cabin', 'Age'], axis=1)
 data = data.dropna()
 #Encode the gender
 Sex = data['Sex'].replace(['female', 'male'], [1, 0], inplace=True)
-#'Name' and 'Ticket' are categorical columns, we will need to encode them or drop them.
-#data = pd.get_dummies(data, columns=['Name', 'Ticket', 'Embarked'], drop_first=True)
+#'Name', 'Ticket' and 'Embarked' are categorical columns, we will need to encode them or drop them.
 data = data.drop(['Name', 'Ticket', 'Embarked'], axis=1)
 print(data.info())
 
@@ -59,17 +59,17 @@ def CalculateAccuracy(y_test, pred):
 def Predict():
     # Getting input from the user to know if he/ she survived or not.. It's optional.
     print('\n Enter the passenger ID you want to know survived or not:')
-    pid = input()
+    pid = int(input())
     print("\n Enter its PClass: ")
-    pclass = input()
+    pclass = int(input())
     print("\n Enter its sex: ")
-    sex = input()
+    sex = int(input())
     print("\n Enter the number of its siblings: ")
-    sib = input()
+    sib = int(input())
     print("\n Enter its parch: ")
-    parch = input()
+    parch = int(input())
     print("\n Enter its fare: ")
-    fare = input()
+    fare = float(input())
     test_row = [[pid, pclass, sex, sib, parch, fare]]
     return test_row
 
@@ -88,7 +88,7 @@ def MyRandomForestClassifier():
         if number == '1':
             test_row = Predict()
             y_pred = rclf.predict(test_row)
-            if y_pred == '1':
+            if y_pred == 1:
                 print("Survived.")
             else:
                 print("Dead.")
@@ -97,22 +97,27 @@ def MyRandomForestClassifier():
         else:
             print("Invalid input.")
 
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
 # 2- KNeighborsClassifier Model
 def KNN():
     neigh = KNeighborsClassifier(n_neighbors=3, algorithm='ball_tree')
-    knnclf = neigh.fit(X_train, y_train)
-    y_pred2 = knnclf.predict(X_test)
+    knnclf = neigh.fit(X_train_scaled, y_train)
+    y_pred2 = knnclf.predict(X_test_scaled)
     print('\n 2- KNeighborsClassifier')
     print('\n-------------------- Training accuracy --------------------')
-    print('\nAccuracy: {:.2f}'.format(accuracy_score(y_train, knnclf.predict(X_train))))
+    print('\nAccuracy: {:.2f}'.format(accuracy_score(y_train, knnclf.predict(X_train_scaled))))
     CalculateAccuracy(y_test, y_pred2)
     while True:
         print("Do you want to know if specific passenger is survived press 1, if not press 2: ")
         number = input()
         if number == '1':
             test_row = Predict()
-            y_pred = knnclf.predict(test_row)
-            if y_pred == '1':
+            test_row_scaled = scaler.transform(test_row)
+            y_pred = knnclf.predict(test_row_scaled)
+            if y_pred == 1:
                 print("Survived.")
             else:
                 print("Dead.")
@@ -138,7 +143,7 @@ def XGBoost():
         if number == '1':
             test_row = Predict()
             y_pred = xgb_clf.predict(test_row)
-            if y_pred == '1':
+            if y_pred == 1:
                 print("Survived.")
             else:
                 print("Dead.")
@@ -165,6 +170,8 @@ def ClassifierModel():
         else:
             print("Invalid input. Please try again.")
 
-
 ClassifierModel()
+
+#893	1	3	Wilkes, Mrs. James (Ellen Needs)	female	47	1	0	363272	7		S
+#909	0	3	Assaf, Mr. Gerios	male	21	0	0	2692	7.225		C
 
